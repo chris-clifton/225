@@ -24,29 +24,58 @@
 //   },
 // };
 
-// Given the code above, implement a factory for countries
+// // Given the code above, implement a factory for countries
 
-function makeCountry(countryName, continent, visited=false) {
-  return { 
-    name: countryName,
-    continent: continent,
-    visited: visited,
-    getDescription: function() {
-      console.log(this.name + ' is located in ' + this.continent + '. I ' +
-      (this.visited ? 'have' : "haven't") + ' visited ' + this.name + '.');
-    },
-    visitCountry: function() {
-      this.visited = true;
-    }
+// function makeCountry(countryName, continent, visited=false) {
+//   return { 
+//     name: countryName,
+//     continent: continent,
+//     visited: visited,
+//     getDescription: function() {
+//       console.log(this.name + ' is located in ' + this.continent + '. I ' +
+//       (this.visited ? 'have' : "haven't") + ' visited ' + this.name + '.');
+//     },
+//     visitCountry: function() {
+//       this.visited = true;
+//     }
+//   };
+// }
+
+// var chile       = makeCountry('The Republic of Chile', 'South America', true);
+// var canada      = makeCountry ('Canada', 'North America');
+// var southAfrica = makeCountry('The Republic of South America', 'Africa');
+
+// southAfrica.visitCountry();
+
+// chile.getDescription();
+// canada.getDescription();
+// southAfrica.getDescription();
+
+// ****************************************************** //
+//                SECOND PASS THROUGH                     //
+// ****************************************************** //
+
+function makeCountry(name, continent, visited) {
+  var country = {};
+
+  if (visited === undefined) {
+    visited = false;
+  }
+
+  country.name = name;
+  country.continent = continent;
+  country.getDescription = function() {
+    console.log(this.name + ' is located in ' + this.continent + '. I ' +
+    (this.visited ? 'have' : "haven't") + ' visited ' + this.name + '.'); 
   };
+  country.visited = visited;
+  country.visitCountry = function() {
+    this.visited = true;
+  }
+  return country;
 }
 
-var chile       = makeCountry('The Republic of Chile', 'South America', true);
-var canada      = makeCountry ('Canada', 'North America');
-var southAfrica = makeCountry('The Republic of South America', 'Africa');
-
-southAfrica.visitCountry();
-
-chile.getDescription();
-canada.getDescription();
-southAfrica.getDescription();
+var australia = makeCountry('Australia', 'Australia');
+australia.visitCountry();
+console.log(australia);
+australia.getDescription();

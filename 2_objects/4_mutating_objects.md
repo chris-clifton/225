@@ -6,6 +6,11 @@
   - The object is not reassigned but a property of it is modified (alters state of the object)
   - Doesn't modify new Object
 
+- LS Terminology
+- This output demonstrates the mutability of objects. Unlike primitives, an object can have its data changed without breaking the connection to any variables pointing to it. Thus, reassigning myObj's property message inside the function scope doesn't break myObj's connection to the object itself. As a result, myObj.messages's reassignment in the function scope is reflected in the global scope as well.
+
+
+
 # VARIABLES HOLD A REFERENCE TO AN OBJECT
 - Using terminology like "store", "hold", and "contain" is not ideal
 - When we pass a variable that points to an object to another function, Javascript passes an identical reference- making the original object and the local variable/argument in the function reference the same object
@@ -13,7 +18,9 @@
 - It's properties are then modified in place and both variables see the altered state of the object
 
 # Reference vs Primitive Values/Types Video
-(https://www.youtube.com/watch?v=9ooYYRLdg_g)
+- (https://www.youtube.com/watch?v=9ooYYRLdg_g)
+- The short version, not 20 minute version of this, is that primitives (things that aren't containers for multiple separate values) make copies when passed to a function; while objects (containers for multiple separate values) make references to the object when passed to a function. In other words, when something is likely to be relatively small, it's okay to make a copy, but when it can potentially be enormously large, you just say where the thing is. Remember, primitives = copies && objects = references (which means addresses  || pointers).
+
 - Primitive Values live on the Stack, which is more short-lived, fast-access, in memory
 - Reference values, like objects/arrays, are kept on the Heap, which is better for bigger amounts of data/data that changes dynamically
   - Each element has its own address
