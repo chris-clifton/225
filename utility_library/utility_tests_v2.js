@@ -19,14 +19,47 @@ function test(message, assertion) {
   }
   $msg.setAttribute("class", passed ? "pass" : "fail");
 }
+
+// Put all methods on this object
 var _ = function(element) {
   var u = {};
+
   u.last = function() {
-    return element[element.length - 1]
-  };
+    return element[element.length - 1];
+  }
+
+  u.first = function() {
+    return element[0];
+  }
+
+  // without should return a new array without the arguments passed in
+  // must be able to handle multiple arguments
+  u.without = function(argument) {
+    var args = Array.prototype.slice.call(arguments)
+    return element.filter(e => !args.includes(e));
+  }
+
+  u.range = function() {
+    var start = arguments[0];
+    var end = arguments[1] - 1 || 0;
+    
+    var result;
+
+    if ( end !== 0) {
+      result = element.slice(start, end);
+    } else {
+      result = element.slice(0, start);
+    }
+    
+    return result;
+
+  }
 
   return u;
 };
+
+
+
 
 test("_ is defined", function() {
   return typeof _ !== "undefined";
