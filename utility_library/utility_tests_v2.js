@@ -535,3 +535,4 @@ test("isString returns true if string, otherwise false", function() {
 test("isNumber returns true if number, (primitive or object), otherwise false", function() {
   return _.isNumber(1) && _.isNumber(new Number(5)) && !_.isNumber("5");
 });
+// ssh test
