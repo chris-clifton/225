@@ -21,43 +21,244 @@ function test(message, assertion) {
 }
 
 // Put all methods on this object
-var _ = function(element) {
-  var u = {};
+(function() {
 
-  u.last = function() {
-    return element[element.length - 1];
+  var findObjs = function(element, props, multiple) {
+    var match = multiple ? [] : undefined;
+
+    element.some(function(obj) {
+      var all_match = true;
+
+      for (var prop in props) {
+        if (!(prop in obj) || obj[prop] !== props[prop]) {
+          all_match = false;
+        }
+      }
+
+      if (all_match) {
+        if (multiple) {
+          match.push(obj);
+        } else {
+          match = obj;
+          return true;
+        }
+      }
+    });
+
+    return match;
   }
 
-  u.first = function() {
-    return element[0];
+  // takes an element, a target array of properties, and a boolean flag 'include'
+  // to return a new object with properties that are either included or not included
+  // in argument object, based on value of boolean
+  var getObjectProperties = function(element, properties, include) {
+    var newObj = {};
+    var properties = Array.prototype.slice.call(properties);
+
+    for (var property in element) {
+      if (include) {
+        if (properties.includes(property)) {
+          newObj[property] = element[property];
+        }
+      } else {
+        if (!properties.includes(property)) {
+          newObj[property] = element[property];
+        }
+      }
+    };
+
+    return newObj;
   }
 
-  // without should return a new array without the arguments passed in
-  // must be able to handle multiple arguments
-  u.without = function(argument) {
-    var args = Array.prototype.slice.call(arguments)
-    return element.filter(e => !args.includes(e));
-  }
+  var _ = function(element) {
+    var u = {
 
-  u.range = function() {
-    var start = arguments[0];
-    var end = arguments[1] - 1 || 0;
-    
-    var result;
+      last: function() {
+        return element[element.length - 1];
+      },
 
-    if ( end !== 0) {
-      result = element.slice(start, end);
-    } else {
-      result = element.slice(0, start);
+      first: function() {
+        return element[0];
+      },
+
+      // without should return a new array without the arguments passed in
+      // must be able to handle multiple arguments
+      without: function() {
+        var args = Array.prototype.slice.call(arguments)
+        return element.filter(e => !args.includes(e));
+      },
+
+      lastIndexOf: function(value) {
+        var length = element.length - 1
+        for( var i = length; i >= 0; i-- ) {
+          if (element[i] === value) {
+            return i;
+          }
+        }
+      },
+
+      // If no argument, return a random element of array
+      // Else return array of multiple non-repeated elements when quantity given
+      sample: function(quantity) {
+        var sampled = [];
+        var copy = element.slice();
+        
+        var random = function() {
+          var index = Math.floor(Math.random() * copy.length);
+          var randomElement = copy[index];
+          copy.splice(index, 1);
+          return randomElement;
+        };
+
+        if (!quantity) { return random(); }
+
+        while(quantity) {
+          sampled.push(random());
+          quantity--;
+        }
+
+        return sampled;
+
+      },
+
+      findWhere: function(property) {
+        return findObjs(element, property, false);
+      },
+
+      where: function(properties) {
+        return findObjs(element, properties, true);
+      },
+
+      // Takes collection of objects and returns an array of values that match supplied key
+      pluck: function(targetKey) {
+        var values = [];
+
+        element.forEach(function(object) {
+          Object.keys(object).forEach(function(key) {
+            if (key === targetKey) {
+              values.push(object[key]);
+            }
+          });
+        });
+
+        return values;
+      },
+
+      // Return an array of the keys of argument object
+      keys: function() {
+        return Object.keys(element);
+      },
+
+      // Return an array of values of argument object
+      values: function() {
+        return Object.keys(element).map(key => element[key]);
+      },
+
+      // Return new object with passed in properties taken from argument object
+      pick: function() {
+        return getObjectProperties(element, arguments, true); 
+      },
+
+      // Return a new object with passed in properties taken from argument object
+      omit: function() {
+        return getObjectProperties(element, arguments, false);
+      },
+
+      // Return true if object passed in contains argument property
+      has: function(property) {
+        return Object.keys(element).includes(property);
+      }
+    };
+
+    var utilityMethods =[ "isElement", "isArray", "isObject", "isFunction",
+                      "isString", "isNumber", "isBoolean" ]
+
+    utilityMethods.forEach(function(method) {
+      u[method] = function() { _[method].call(u, element); };
+    })
+
+    return u;
+  };
+
+  //--------------------- Utility methods ---------------------//
+
+  // Return array of values 0 -> arg if one argument
+  // Return array of values firstArg -> secondArg (minus one) if two arguments
+  _.range = function(start, end) {
+    var range = [];
+    if (end === undefined) {
+      end = start;
+      start = 0;
     }
-    
-    return result;
 
+    for (var i = start; i < end; i++) {
+      range.push(i);
+    }
+    return range;
+  };
+
+  // Take any number of objects as arguments and copy their properties/values to the first
+  // argument object.  Should start with last argument first and work its way towards first arg.
+  _.extend = function() {
+    var destination = arguments[0]
+    var length = arguments.length - 1;
+
+    for(var i = length; i > 0; i--) {
+      var currentObj = arguments[i];
+
+      for (var property in currentObj) {
+        destination[property] = currentObj[property];
+      }
+    };
+
+    return destination;
   }
 
-  return u;
-};
+  // Check to see if the passed in element is a DOM element
+  _.isElement = function(object) {
+    return object && object.nodeType === 1;
+  };
 
+  _.isArray = Array.isArray || function(object) {
+    return toString.call(object) === "[object Array]";
+  };
+
+  _.isObject = function(object) {
+    var type = typeof object;
+    return type  === "function" || type === "object" && !!object;
+  };
+
+  _.isFunction = function(object) {
+    var type = typeof object;
+    return type === "function";
+  };
+
+  // Passing this array to forEach below eliminates the need for the three
+  // methods commented out below
+  var dataTypes = ["Boolean", "String", "Number"];
+
+  dataTypes.forEach(function(method) {
+    _["is" + method] = function(object) {
+      return toString.call(object) === "[object " + method + "]";
+    }
+  })
+
+  // _.isBoolean = function(object) {
+  //   return toString.call(object) === "[object Boolean]";
+  // };
+
+  // _.isString = function(object) {
+  //   return toString.call(object) === "[object String]";
+  // };
+
+  // _.isNumber = function(object) {
+  //   return toString.call(object) === "[object Number]";
+  // };
+
+  // assign _ as a property of the window object
+  window._ = _;
+
+})();
 
 
 
