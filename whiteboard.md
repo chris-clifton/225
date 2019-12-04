@@ -56,8 +56,16 @@ function makeOtherObject(arguments) {
 
 # Object Creation Patterns
 ## Constructor Functions
+- Use `new` operator and capitalize function name
+- Must explicitly return an object in constructor function, else will return `this`
+- Constructor 4 steps
 ## Prototype Objects
+- dunder proto `__proto__`, `isPrototypeOf`, `Object.getPrototypeOf`
 ## Behavior Delegation
+- Behavior is "inhereted" down and "delegated" up
+- The hasOwnProperty method on an object tests if a property is defined on the object itself.
+- The Object.getOwnPropertyNames method returns an array of an object's own property names.
+
 ## OLOO Pattern
 ## Pseudo-Classical Pattern
 

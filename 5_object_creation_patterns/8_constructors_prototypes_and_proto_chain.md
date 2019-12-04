@@ -15,3 +15,19 @@
 - Assigns the object returned by Object.create on Animal.prototype to `Dog.prototype`
 - Doing this leverages the fact that `Object.create` returns have their `__proto__` property set to the object that was passed in as an argument
 - The benefit is that there are no new properties that can be found on the created object and it is only "behavior" that is shared
+
+## Manually resetting the prototype property
+```javascript
+// continued from the code snippet of either method1 or method2
+var myDog = new Dog;
+myDog.constructor;  // returns `Animal` constructor function
+
+Dog.prototype.constructor = Dog;
+myDog.constructor;  // returns `Dog` constructor function (an anonymous function)
+```
+
+## Directly assigning a prototype to another prototype
+```javascript
+Dog.prototype = Animal.prototype;
+```
+- This can be problematic because `Dog.prototype` points to the **exact** same object as `Animal.prototype` and now, anytime we change `Dog.prototype`, the change is reflected in `Animal.prototype`

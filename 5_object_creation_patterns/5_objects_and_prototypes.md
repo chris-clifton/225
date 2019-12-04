@@ -12,7 +12,7 @@ var foo = {
 var bar = Object.create(foo);
 bar.__proto__ === foo;                  // true
 ```
-- **In this case we say that the object assigned to `foo` is the prototype object of the object returned by `Object.create` and assigned ot `bar`**
+- **In this case we say that the object assigned to `foo` is the prototype object of the object returned by `Object.create` and assigned to `bar`**
 - `Foo.prototype` references `Function.prototype` while `Foo.__proto__` is set as the prototype object for any object returned by `Foo` when invoked as a constructor
 
 ## `Object.getPrototypeOf` and `isPrototypeOf`
@@ -20,7 +20,7 @@ bar.__proto__ === foo;                  // true
 - In actual JS specification, this property is defined as `[[Prototype]]` which is not somethin gyou can interact with directly
 - `__proto__` got popular though and has been adopted by almost all modern browsers and is standardized in ECMAScript 6
 - For compatibility reasons, its better to use the following two methods:
-  - `Object.getPrototypeOf(obj)` to get the prototype object of `obj`
+  - `Object.getPrototypeOf(obj) === foo` to get the prototype object of `obj`
   - `obj.isPrototypeOf(foo)` to check if `obj` is a prototype object of `foo`
 
 ## Prototype Chain and the `Object.prototype` Object

@@ -1,4 +1,5 @@
 # Factory Function
+- Factory Object Creation Pattern
 - Using functions as object factories (factory functions) provides us a way to create objects based on a pre-defined template
 ```javascript
 function createPerson(firstName, lastName) {
@@ -17,6 +18,17 @@ var jane = createPerson('Jane');
 
 john.fullName();        // "John Doe"
 jane.fullName();        // "Jane"
+
+// Same thing as an object literal
+function createPerson(firstName, lastName) {
+  return {
+    firstName: firstName,
+    lastName: lastName || '',
+    fullName: function() {
+      return (this.firstName + ' ' + this.lastName).trim();
+    },
+  };
+}
 ```
 
 ## Disadvantages of Factory Functions
